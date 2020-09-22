@@ -13,8 +13,8 @@ func Test_getFileContentType(t *testing.T) {
 		in  in
 		out string
 	}{
-		{in{"test/originally_jpg.jpg"}, ContentTypeJpeg},
-		{in{"test/originally_png.png"}, ContentTypePng},
+		{in{"test/originally_jpg.jpg"}, contentTypeJPEG},
+		{in{"test/originally_png.png"}, contentTypePNG},
 	}
 
 	for _, tt := range tests {

@@ -12,10 +12,11 @@ import (
 )
 
 const (
-	ContentTypeJpeg = "image/jpeg"
-	ContentTypePng  = "image/png"
-	ExtensionJpg    = ".jpg"
-	ExtensionPng    = ".png"
+	contentTypeJPEG  = "image/jpeg"
+	contentTypePNG   = "image/png"
+	contentTypeOther = "application/octet-stream"
+	extensionJPEG    = ".jpg"
+	extensionPNG     = ".png"
 )
 
 // Indecates file destination to convert.
@@ -58,19 +59,19 @@ func convert(filepath, extFrom, extTo string) error {
 	defer to.Close()
 
 	switch extFrom {
-	case ExtensionJpg:
-		return jpegToPng(fileDest{from, to})
-	case ExtensionPng:
-		return pngToJpeg(fileDest{from, to})
+	case extensionJPEG:
+		return jpegToPNG(fileDest{from, to})
+	case extensionPNG:
+		return pngToJPEG(fileDest{from, to})
 	default:
 		return nil
 	}
 }
 
 // Convert an image file from jpeg to png.
-func jpegToPng(dest fileDest) error {
-	if !isJpeg(dest.from) {
-		return errors.New("content type of the original file is not " + ContentTypeJpeg)
+func jpegToPNG(dest fileDest) error {
+	if !isJPEG(dest.from) {
+		return errors.New("content type of the original file is not " + contentTypeJPEG)
 	}
 
 	jpegImg, err := jpeg.Decode(dest.from)
@@ -84,9 +85,9 @@ func jpegToPng(dest fileDest) error {
 }
 
 // Convert an image file from png to jpeg.
-func pngToJpeg(dest fileDest) error {
-	if !isPng(dest.from) {
-		return errors.New("content type of the original file is not " + ContentTypePng)
+func pngToJPEG(dest fileDest) error {
+	if !isPNG(dest.from) {
+		return errors.New("content type of the original file is not " + contentTypePNG)
 	}
 
 	pngImg, err := png.Decode(dest.from)
@@ -99,15 +100,15 @@ func pngToJpeg(dest fileDest) error {
 }
 
 // Determine if the content type of a given file is image/jpeg
-func isJpeg(file *os.File) bool {
+func isJPEG(file *os.File) bool {
 	contentType, _ := getFileContentType(file)
-	return contentType == ContentTypeJpeg
+	return contentType == contentTypeJPEG
 }
 
 // Determine if the content type of a given file is image/png
-func isPng(file *os.File) bool {
+func isPNG(file *os.File) bool {
 	contentType, _ := getFileContentType(file)
-	return contentType == ContentTypePng
+	return contentType == contentTypePNG
 }
 
 // Detect content type from the first 512 bytes of a given file.
