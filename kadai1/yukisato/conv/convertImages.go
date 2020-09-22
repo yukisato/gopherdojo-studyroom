@@ -40,32 +40,39 @@ func ConvertImages(destDir, extFrom, extTo string) error {
 			err = convert(path, extFrom, extTo)
 		}
 
-		return nil
+		return err
 	})
 }
 
 // Convert all the image files with a specified extension under target directory to another file with anotehr extension.
-func convert(filepath, extFrom, extTo string) error {
-	from, err := os.Open(filepath)
+func convert(filepathFrom, extFrom, extTo string) error {
+	from, err := os.Open(filepathFrom)
 	if err != nil {
 		return err
 	}
 	defer from.Close()
 
-	to, err := os.Create(strings.TrimSuffix(filepath, extFrom) + extTo)
+	filepathTo := strings.TrimSuffix(filepathFrom, extFrom) + extTo
+	to, err := os.Create(filepathTo)
 	if err != nil {
 		return err
 	}
 	defer to.Close()
 
-	switch extFrom {
-	case extensionJPEG:
-		return jpegToPNG(fileDest{from, to})
-	case extensionPNG:
-		return pngToJPEG(fileDest{from, to})
+	switch {
+	case extFrom == extensionJPEG && extTo == extensionPNG:
+		err = jpegToPNG(fileDest{from, to})
+	case extFrom == extensionPNG && extTo == extensionJPEG:
+		err = pngToJPEG(fileDest{from, to})
 	default:
-		return nil
+		err = errors.New("unsupported extension combination to covert from: " + extFrom + " to: " + extTo)
 	}
+
+	if err != nil {
+		defer os.Remove(filepathTo)
+	}
+
+	return err
 }
 
 // Convert an image file from jpeg to png.

@@ -25,5 +25,8 @@ func main() {
 	}
 
 	// For checking the extensions precisely, add periods.
-	conv.ConvertImages(destDir, "."+*extFrom, "."+*extTo)
+	err := conv.ConvertImages(destDir, "."+*extFrom, "."+*extTo)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error while converting images: %s", err)
+	}
 }
